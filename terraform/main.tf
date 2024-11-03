@@ -51,6 +51,17 @@ resource "google_project_service" "services" {
   }
 }
 
+# Artifact Registryリポジトリの作成
+resource "google_artifact_registry_repository" "docker_repo" {
+  depends_on = [google_project_service.services]
+  
+  location      = var.region
+  repository_id = "docker-repo"
+  description   = "Docker repository for GitHub Actions"
+  format        = "DOCKER"
+  project       = var.project_id
+}
+
 # GitHub Actions用のサービスアカウントの作成
 resource "google_service_account" "github_actions" {
   depends_on = [
@@ -107,7 +118,7 @@ resource "google_project_iam_member" "service_account_roles" {
   member  = "serviceAccount:${google_service_account.github_actions.email}"
 }
 
-# Workload Identity Pool と サービスアカウントの紐付け
+# Workload Identity Poolとサービスアカウントの紐付け
 resource "google_service_account_iam_member" "workload_identity_user" {
   service_account_id = google_service_account.github_actions.name
   role               = "roles/iam.workloadIdentityUser"
@@ -115,7 +126,6 @@ resource "google_service_account_iam_member" "workload_identity_user" {
 }
 
 # Secretsに必要な情報を出力
-
 output "PROJECT_ID" {
   value       = var.project_id
   description = "GCP Project ID"
