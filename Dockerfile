@@ -23,7 +23,7 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 # ビルドされたファイルをコピー
-COPY --from=builder /app/dist /usr/share/nginx/html/game_pages
+COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Nginx設定ファイルをコピー
 COPY default.conf /etc/nginx/conf.d/default.conf
