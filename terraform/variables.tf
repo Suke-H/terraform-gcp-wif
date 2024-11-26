@@ -14,6 +14,11 @@ variable "github_repo" {
   description = "GitHubリポジトリ (例: user/repo)"
 }
 
+variable "artifact_registry_repo_name" {
+  type        = string
+  description = "Artifact Registryのリポジトリ名"
+}
+
 variable "terraform_sa_name" {
   type        = string
   description = "Terraform用サービスアカウントの名前"

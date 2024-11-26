@@ -45,7 +45,7 @@ resource "google_artifact_registry_repository" "docker_repo" {
   depends_on = [google_project_service.services]
   
   location      = var.region
-  repository_id = "docker-repo"
+  repository_id = var.artifact_registry_repo_name
   description   = "Docker repository for GitHub Actions"
   format        = "DOCKER"
   project       = var.project_id
@@ -109,9 +109,10 @@ resource "google_service_account_iam_member" "workload_identity_user" {
 # Secretsに必要な情報を出力
 output "github_actions" {
   value = {
-    PROJECT_ID     = var.project_id
-    WIF_PROVIDER   = "projects/${data.google_project.project.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.github_pool.workload_identity_pool_id}/providers/${google_iam_workload_identity_pool_provider.github_provider.workload_identity_pool_provider_id}"
-    SA_EMAIL       = google_service_account.github_actions.email
+    PROJECT_ID                  = var.project_id
+    WIF_PROVIDER                = "projects/${data.google_project.project.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.github_pool.workload_identity_pool_id}/providers/${google_iam_workload_identity_pool_provider.github_provider.workload_identity_pool_provider_id}"
+    SA_EMAIL                    = google_service_account.github_actions.email
+    ARTIFACT_REGISTRY_REPO_NAME = var.artifact_registry_repo_name
   }
   description = "GitHub Actions用の設定情報"
 }
